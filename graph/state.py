@@ -5,3 +5,4 @@ class AgentState(TypedDict):
     pdf_path: str
     user_profile: Dict
     fetched_jobs: List[Dict]
+    scored_jobs: List[Dict]
