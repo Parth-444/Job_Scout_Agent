@@ -6,3 +6,4 @@ class AgentState(TypedDict):
     user_profile: Dict
     fetched_jobs: List[Dict]
     scored_jobs: List[Dict]
+    top_jobs: List[Dict]
