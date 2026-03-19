@@ -18,11 +18,17 @@ def tailor_resume_agent(state: AgentState):
     for job in state["top_jobs"]:
         message = [
             SystemMessage(content=p["system"]),
-            HumanMessage(content=p["user"].format(user_profile=state["user_profile"], **job))
+            HumanMessage(content=p["user"].format(
+                user_profile=state["user_profile"],
+                job_title=job.job_title,
+                employer_name=job.employer_name,
+                job_description=job.job_description,
+                reasoning=job.reasoning,
+            ))
         ]
 
         result = llm_with_structure.invoke(message)
 
-        updated_jobs.append({**job, "tailored_resume": result.latex_code})
+        updated_jobs.append({**job.model_dump(), "tailored_resume": result.latex_code})
 
     return {"top_jobs": updated_jobs}

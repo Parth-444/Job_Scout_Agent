@@ -9,7 +9,7 @@ load_dotenv()
 def job_fetch(state: AgentState):
     user_profile = state["user_profile"]
     target_roles = user_profile["target_roles"]
-    preferred_locations = user_profile["location_preferences"]
+    preferred_locations = user_profile["location_preferences"] or ["India"]
 
     url = "https://jsearch.p.rapidapi.com/search"
     headers = {
@@ -23,12 +23,16 @@ def job_fetch(state: AgentState):
             query_string = {
                 "query": f"{role} jobs in {location}",
                 "num_pages": "1",
-                "date_posted": "last_3_days",
+                "date_posted": "3days",
                 "country": "IN"
             }
             response = requests.get(url, headers=headers, params=query_string)
             data = response.json()
-            
+
+            print(f"[job_fetcher] query: {query_string['query']} | status: {data.get('status')} | http: {response.status_code}")
+            if data.get("status") != "OK":
+                print(f"[job_fetcher] error response: {data}")
+
             if data.get("status") == "OK" and "data" in data:
                 for job in data["data"]:
                     simplified_job = {
